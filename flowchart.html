@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<title>LBMS Flowchart</title>
+<style>
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    background: #ffffff;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  h2 {
+    font-size: 1.2rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+    color: #111;
+  }
+  p.sub { font-size: 0.75rem; color: #888; margin-bottom: 24px; }
+
+  .flow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+  }
+
+  /* shapes */
+  .terminal {
+    background: #1a1a2e;
+    color: #fff;
+    border-radius: 50px;
+    padding: 8px 32px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+  }
+
+  .process {
+    background: #16213e;
+    color: #fff;
+    padding: 9px 24px;
+    font-size: 12px;
+    text-align: center;
+    min-width: 200px;
+    border-radius: 4px;
+  }
+
+  .io {
+    background: #533483;
+    color: #fff;
+    padding: 9px 24px;
+    font-size: 12px;
+    text-align: center;
+    min-width: 200px;
+    border-radius: 4px;
+  }
+
+  .decision {
+    background: #0f3460;
+    color: #fff;
+    padding: 10px 20px;
+    font-size: 12px;
+    text-align: center;
+    min-width: 180px;
+    transform: skewX(-15deg);
+    border-radius: 3px;
+  }
+  .decision span { display: inline-block; transform: skewX(15deg); }
+
+  .success {
+    background: #1b5e20;
+    color: #fff;
+    padding: 9px 24px;
+    font-size: 12px;
+    text-align: center;
+    min-width: 200px;
+    border-radius: 4px;
+  }
+
+  .error {
+    background: #7f1d1d;
+    color: #fff;
+    padding: 7px 16px;
+    font-size: 11px;
+    text-align: center;
+    border-radius: 4px;
+  }
+
+  .arrow {
+    width: 2px;
+    height: 20px;
+    background: #555;
+    position: relative;
+    margin: 0 auto;
+  }
+  .arrow::after {
+    content: '';
+    position: absolute;
+    bottom: -6px;
+    left: -4px;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 7px solid #555;
+  }
+
+  .arrow-lbl {
+    font-size: 10px;
+    color: #555;
+    font-weight: 700;
+    margin: -2px 0;
+    text-align: center;
+  }
+
+  /* row with error branch */
+  .row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    position: relative;
+  }
+
+  .branch-right {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .branch-line {
+    width: 40px;
+    height: 2px;
+    background: #555;
+    position: relative;
+  }
+  .branch-line::after {
+    content: '';
+    position: absolute;
+    right: -6px;
+    top: -4px;
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+    border-left: 7px solid #555;
+  }
+
+  .no-lbl {
+    font-size: 10px;
+    color: #c0392b;
+    font-weight: 700;
+  }
+
+  /* section headers */
+  .section-title {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #888;
+    margin: 18px 0 6px;
+    border-top: 1px dashed #ddd;
+    padding-top: 14px;
+    width: 100%;
+    text-align: center;
+  }
+
+  /* branches grid */
+  .branches {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    width: 100%;
+    max-width: 860px;
+    margin: 10px 0;
+  }
+
+  .branch-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 12px 8px;
+    background: #fafafa;
+  }
+
+  .branch-col h3 {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #333;
+    margin-bottom: 10px;
+    text-align: center;
+  }
+
+  .mini-process {
+    background: #16213e;
+    color: #fff;
+    padding: 7px 12px;
+    font-size: 11px;
+    text-align: center;
+    width: 100%;
+    border-radius: 3px;
+  }
+
+  .mini-io {
+    background: #533483;
+    color: #fff;
+    padding: 7px 12px;
+    font-size: 11px;
+    text-align: center;
+    width: 100%;
+    border-radius: 3px;
+  }
+
+  .mini-decision {
+    background: #0f3460;
+    color: #fff;
+    padding: 7px 12px;
+    font-size: 11px;
+    text-align: center;
+    width: 100%;
+    border-radius: 3px;
+    font-style: italic;
+  }
+
+  .mini-success {
+    background: #1b5e20;
+    color: #fff;
+    padding: 7px 12px;
+    font-size: 11px;
+    text-align: center;
+    width: 100%;
+    border-radius: 3px;
+  }
+
+  .mini-error {
+    background: #7f1d1d;
+    color: #fff;
+    padding: 5px 8px;
+    font-size: 10px;
+    text-align: center;
+    width: 90%;
+    border-radius: 3px;
+  }
+
+  .mini-arrow {
+    width: 2px;
+    height: 14px;
+    background: #999;
+    position: relative;
+    margin: 0 auto;
+  }
+  .mini-arrow::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: -3px;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 6px solid #999;
+  }
+
+  .mini-no {
+    font-size: 9px;
+    color: #c0392b;
+    font-weight: 700;
+    text-align: center;
+  }
+
+  /* legend */
+  .legend {
+    display: flex;
+    gap: 16px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+    border-top: 1px solid #eee;
+    padding-top: 14px;
+  }
+  .leg-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: #444;
+  }
+  .leg-box {
+    width: 20px; height: 14px;
+    border-radius: 2px;
+  }
+  .leg-oval {
+    width: 24px; height: 14px;
+    border-radius: 50px;
+  }
+</style>
+</head>
+<body>
+
+<h2>Library Book Management System</h2>
+<p class="sub">Overall Program Flowchart</p>
+
+<div class="flow" style="max-width:340px; width:100%;">
+
+  <!-- START -->
+  <div class="terminal">START</div>
+  <div class="arrow"></div>
+
+  <!-- Load Files -->
+  <div class="io">Load books.dat &amp; issued.dat</div>
+  <div class="arrow"></div>
+
+  <!-- Display Menu -->
+  <div class="process">Display Main Menu (1–6, 0)</div>
+  <div class="arrow"></div>
+
+  <!-- Read Choice -->
+  <div class="io">Read User Choice</div>
+  <div class="arrow"></div>
+
+  <!-- Valid? -->
+  <div class="row">
+    <div class="decision"><span>Valid Choice? (0–6)</span></div>
+    <div class="branch-right">
+      <div class="no-lbl">NO</div>
+      <div class="branch-line"></div>
+      <div class="error">Print Error<br/>Invalid Input</div>
+    </div>
+  </div>
+  <div class="arrow-lbl">YES ↓</div>
+  <div class="arrow"></div>
+
+  <!-- Switch -->
+  <div class="decision"><span>Switch on Choice</span></div>
+
+</div>
+
+<!-- BRANCHES GRID -->
+<div class="section-title">Feature Branches (Choice 1 to 6)</div>
+
+<div class="branches">
+
+  <!-- ADD BOOK -->
+  <div class="branch-col">
+    <h3>1 — Add Book</h3>
+    <div class="mini-process">Input Title, Author, Copies</div>
+    <div class="mini-arrow"></div>
+    <div class="mini-decision">Fields Valid?</div>
+    <div class="mini-no">↓ NO → Error: Empty/Invalid</div>
+    <div class="mini-error">Error: Empty / Invalid</div>
+    <div class="mini-arrow"></div>
+    <div style="font-size:9px;color:#1b5e20;font-weight:700;">YES ↓</div>
+    <div class="mini-process">Auto Assign Book ID</div>
+    <div class="mini-arrow"></div>
+    <div class="mini-io">Save to books.dat</div>
+    <div class="mini-arrow"></div>
+    <div class="mini-success">SUCCESS: Book Added</div>
+  </div>
+
+  <!-- ISSUE BOOK -->
+  <div class="branch-col">
+    <h3>2 — Issue Book</h3>
+    <div class="mini-process">Input Book ID, Reg No, Name</div>
+    <div class="mini-arrow"></div>
+    <div class="mini-decision">Book ID Exists?</div>
+    <div class="mini-no">NO → Error</div>
+    <div class="mini-error">Error: ID Not Found</div>
+    <div class="mini-arrow"></div>
+    <div class="mini-decision">Copies Available?</div>
+    <div class="mini-no">NO → Error</div>
+    <div class="mini-error">Error: All Copies Issued</div>
+    <div class="mini-arrow"></div>
+    <div class="mini-decision">Valid Reg No? (9 chars)</div>
+    <div class="mini-no">NO → Error</div>
+    <div class="mini-error">Error: Invalid Reg No</div>
+    <div class="mini-arrow"></div>
+    <div class="mini-decision">Already Issued?</div>
+    <div class="mini-no">YES → Error</div>
+    <div class="mini-error">Error: Duplicate Issue</div>
+    <div class="mini-arrow"></div>
+    <div class="mini-process">Create Record, Set Dates<br/>Decrement Available Copy</div>
+    <div class="mini-arrow"></div>
+    <div class="mini-io">Save books.dat + issued.dat</div>
+    <div class="mini-arrow"></div>
+    <div class="mini-success">SUCCESS: Book Issued</div>
+  </div>
+
+  <!-- RETURN BOOK -->
+  <div class="branch-col">
+    <h3>3 — Return Book</h3>
+    <div class="mini-process">Input Issue ID</div>
+    <div class="mini-arrow"></div>
+    <div class="mini-decision">Issue ID Found?</div>
+    <div class="mini-no">NO → Error</div>
+    <div class="mini-error">Error: ID Not Found</div>
+    <div class="mini-arrow"></div>
+    <div class="mini-decision">Already Returned?</div>
+    <div class="mini-no">YES → Error</div>
+    <div class="mini-error">Error: Already Returned</div>
+    <div class="mini-arrow"></div>
+    <div class="mini-process">Mark Returned<br/>Set Return Date</div>
+    <div class="mini-arrow"></div>
+    <div class="mini-process">Increment Available Copies</div>
+    <div class="mini-arrow"></div>
+    <div class="mini-io">Save books.dat + issued.dat</div>
+    <div class="mini-arrow"></div>
+    <div class="mini-success">SUCCESS: Book Returned</div>
+  </div>
+
+  <!-- SEARCH -->
+  <div class="branch-col">
+    <h3>4 — Search Book</h3>
+    <div class="mini-process">Choose: By ID or Keyword</div>
+    <div class="mini-arrow"></div>
+    <div class="mini-io">Input Search Query</div>
+    <div class="mini-arrow"></div>
+    <div class="mini-decision">Match Found?</div>
+    <div class="mini-no">NO → Error</div>
+    <div class="mini-error">Error: No Match Found</div>
+    <div class="mini-arrow"></div>
+    <div class="mini-success">Display Book Details</div>
+  </div>
+
+  <!-- VIEW ISSUED -->
+  <div class="branch-col">
+    <h3>5 — View Issued Books</h3>
+    <div class="mini-decision">Records Exist?</div>
+    <div class="mini-no">NO → Message</div>
+    <div class="mini-error">No Books Issued</div>
+    <div class="mini-arrow"></div>
+    <div class="mini-success">Display Issued Records Table</div>
+  </div>
+
+  <!-- VIEW ALL -->
+  <div class="branch-col">
+    <h3>6 — View All Books</h3>
+    <div class="mini-decision">Books Exist?</div>
+    <div class="mini-no">NO → Message</div>
+    <div class="mini-error">No Books in System</div>
+    <div class="mini-arrow"></div>
+    <div class="mini-success">Display Full Catalogue Table</div>
+  </div>
+
+</div>
+
+<!-- AFTER BRANCHES -->
+<div class="flow" style="max-width:340px; width:100%; margin-top:10px;">
+  <div class="arrow"></div>
+  <div class="process">Return to Main Menu (Loop)</div>
+  <div class="arrow"></div>
+  <div class="section-title" style="margin:0 0 8px;">Choice 0 — Exit</div>
+  <div class="io">Save books.dat &amp; issued.dat</div>
+  <div class="arrow"></div>
+  <div class="terminal">END</div>
+</div>
+
+<!-- LEGEND -->
+<div class="legend">
+  <div class="leg-item"><div class="leg-oval" style="background:#1a1a2e;"></div> Start/End</div>
+  <div class="leg-item"><div class="leg-box" style="background:#16213e;"></div> Process</div>
+  <div class="leg-item"><div class="leg-box" style="background:#533483;"></div> Input/Output/File</div>
+  <div class="leg-item"><div class="leg-box" style="background:#0f3460;"></div> Decision</div>
+  <div class="leg-item"><div class="leg-box" style="background:#1b5e20;"></div> Success</div>
+  <div class="leg-item"><div class="leg-box" style="background:#7f1d1d;"></div> Error</div>
+</div>
+
+</body>
+</html>
